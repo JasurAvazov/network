@@ -13,8 +13,8 @@
                         <p>updatedAt: {{ mySwitch.updatedAt }},</p>
                         <p>ports: {{ mySwitch.ports }},</p>
                         <div class="btns">
-                            <button @click="deleteSwitch(mySwitch.id)" class="delete">Удалить</button>
-                            <button @click="deleteSwitch(mySwitch.id)" class="edit">Редактировать</button>
+                            <button @click="openDelete(mySwitch.id)" class="delete">Удалить</button>
+                            <button class="edit">Редактировать</button>
                         </div>
                     </li>
                 </ul>
@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import NavBar from "../components/switches/NavBar.vue";
-import SideBar from "../components/switches/SideBar.vue";
-import { readDocuments, deleteDocument } from '../services/switch';
+import NavBar from "../../components/switches/NavBar.vue";
+import SideBar from "../../components/switches/SideBar.vue";
+import { readDocuments, deleteDocument } from '../../services/switch';
 
 export default {
     components: {
@@ -36,6 +36,7 @@ export default {
     data() {
         return {
             switches: [],
+            deleteModal: false
         };
     },
     async asyncData() {
@@ -43,9 +44,12 @@ export default {
         return { switches };
     },
     methods: {
-        async deleteSwitch(id) {
-            await deleteDocument(id);
-            this.switches = await readDocuments();
+        async openDelete(id) {
+            let text = "вы точно хотите удалить?"
+            if (confirm(text) == true) {
+                await deleteDocument(id);
+                this.switches = await readDocuments();
+            } else {}
         }
     },
     created() {
